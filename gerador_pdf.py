@@ -13,6 +13,8 @@ from reportlab.lib.styles import (
     ParagraphStyle
 )
 
+import os
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.enums import TA_CENTER
 
@@ -32,12 +34,21 @@ def gerar_pdf(
     # REGISTRA FONTE UTF-8
     # =================================================
 
-    pdfmetrics.registerFont(
-        TTFont(
-            "Arial",
-            "C:/Windows/Fonts/arial.ttf"
-        )
+    fonte_padrao = "Helvetica"
+    fonte_caminho = os.path.join(
+        os.path.dirname(__file__),
+        "fontes",
+        "DejaVuSans.ttf"
     )
+
+    if os.path.exists(fonte_caminho):
+        pdfmetrics.registerFont(
+            TTFont(
+                "DejaVu",
+                fonte_caminho
+            )
+        )
+        fonte_padrao = "DejaVu"
 
     # =================================================
     # DOCUMENTO
@@ -63,7 +74,7 @@ def gerar_pdf(
     titulo_style = ParagraphStyle(
         "Titulo",
         parent=estilos["Heading1"],
-        fontName="Arial",
+        fontName=fonte_padrao,
         alignment=TA_CENTER,
         fontSize=20,
         leading=30,
@@ -77,7 +88,7 @@ def gerar_pdf(
     texto_style = ParagraphStyle(
         "Texto",
         parent=estilos["BodyText"],
-        fontName="Arial",
+        fontName=fonte_padrao,
         fontSize=11,
         leading=18
     )
@@ -89,7 +100,7 @@ def gerar_pdf(
     subtitulo_style = ParagraphStyle(
         "Subtitulo",
         parent=estilos["Heading2"],
-        fontName="Arial"
+        fontName=fonte_padrao
     )
 
     # =================================================
@@ -99,7 +110,7 @@ def gerar_pdf(
     tabela_style = ParagraphStyle(
         "Tabela",
         parent=estilos["BodyText"],
-        fontName="Arial",
+        fontName=fonte_padrao,
         fontSize=8,
         leading=10
     )
@@ -184,9 +195,9 @@ def gerar_pdf(
 
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
 
-        ("FONTNAME", (0, 0), (-1, 0), "Arial"),
+        ("FONTNAME", (0, 0), (-1, 0), fonte_padrao),
 
-        ("FONTNAME", (0, 1), (-1, -1), "Arial"),
+        ("FONTNAME", (0, 1), (-1, -1), fonte_padrao),
 
         ("FONTSIZE", (0, 0), (-1, -1), 9),
 
@@ -209,6 +220,10 @@ def gerar_pdf(
     ]))
 
     elementos.append(tabela)
+
+    caminho_diretorio = os.path.dirname(caminho_pdf)
+    if caminho_diretorio:
+        os.makedirs(caminho_diretorio, exist_ok=True)
 
     # =================================================
     # GERA PDF

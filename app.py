@@ -32,7 +32,7 @@ cliente = st.text_input(
 # =====================================================
 
 arquivo = st.file_uploader(
-    "Selecione a planilha CSV exportada do Zabbix/Hábito",
+    "Selecione a planilha CSV exportada do Zabbix",
     type=["csv"]
 )
 
